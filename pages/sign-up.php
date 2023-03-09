@@ -5,7 +5,6 @@ require_once "../database/functions.php";
 $req = "SELECT *
         FROM roles";
 $res = select($req);
-  
 
 
 if (isset($_SESSION['msg_email_telephone'])) {
