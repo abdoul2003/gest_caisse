@@ -1,17 +1,16 @@
-<!--
-=========================================================
-* Soft UI Dashboard - v1.0.7
-=========================================================
+<?php
+session_start();
 
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://www.creative-tim.com/license)
-* Coded by Creative Tim
+if (isset($_SESSION['msg_conn'])) {
+  $msg_conn = $_SESSION['msg_conn'];
+}
 
-=========================================================
+if (isset($_SESSION['user_conn_msg'])) {
+  $user_conn_msg = $_SESSION['user_conn_msg'];
+}
 
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
--->
+session_destroy();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -82,7 +81,20 @@
                   <p class="mb-0">Entrez votre email et votre mot de passe</p>
                 </div>
                 <div class="card-body">
-                  <form role="form" method="GET" action="">
+                  <form role="form" method="GET" action="sign-in-script.php">
+
+                    <?php if (isset($user_conn_msg)): ?>
+                      <div class="alert alert-danger text-white">
+                        <?= $user_conn_msg; ?>
+                      </div>
+                    <?php endif; ?>
+
+                    <?php if (isset($msg_conn)): ?>
+                      <div class="alert alert-danger text-white">
+                        <?= $msg_conn; ?>
+                      </div>
+                    <?php endif; ?>
+
                     <label>Email</label>
                     <div class="mb-3">
                       <input type="email" class="form-control" name="email" placeholder="Email" required>
@@ -92,7 +104,7 @@
                       <input type="password" class="form-control" name="mdp" placeholder="Mot de passe" required>
                     </div>
                     <div class="text-center d-flex align-items-center">
-                      <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0">Se connecter
+                      <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0" name="submit">Se connecter
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z"/>
                         <path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>

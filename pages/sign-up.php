@@ -1,17 +1,36 @@
-<!--
-=========================================================
-* Soft UI Dashboard - v1.0.7
-=========================================================
+<?php
+session_start();
+require_once "../database/functions.php";
 
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://www.creative-tim.com/license)
-* Coded by Creative Tim
+$req = "SELECT *
+        FROM roles";
+$res = select($req);
+  
 
-=========================================================
 
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
--->
+if (isset($_SESSION['msg_email_telephone'])) {
+  $msg_email_telephone = $_SESSION['msg_email_telephone'];
+}
+
+if (isset($_SESSION['msg_create_account'])) {
+  $msg_create_account = $_SESSION['msg_create_account'];
+}
+
+if (isset($_SESSION['comptable_exist'])) {
+  $comptable_exist = $_SESSION['comptable_exist'];
+}
+
+if (isset($_SESSION['rac_exist'])) {
+  $rac_exist = $_SESSION['rac_exist'];
+}
+
+if (isset($_SESSION['directeur_exist'])) {
+  $directeur_exist = $_SESSION['directeur_exist'];
+}
+
+
+session_destroy();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -53,7 +72,38 @@
           <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
             <div class="card z-index-0">
               <div class="card-body">
-                <form role="form text-left">
+                <form role="form text-left" action="sign-up-script.php" method="POST">
+                  
+                  <?php if (isset($msg_email_telephone)): ?>
+                    <div class="alert alert-danger text-white">
+                      <?= $msg_email_telephone; ?>
+                    </div>
+                  <?php endif; ?>
+
+                  <?php if (isset($rac_exist)): ?>
+                    <div class="alert alert-danger text-white">
+                      <?= $rac_exist; ?>
+                    </div>
+                  <?php endif; ?>
+
+                  <?php if (isset($directeur_exist)): ?>
+                    <div class="alert alert-danger text-white">
+                      <?= $directeur_exist; ?>
+                    </div>
+                  <?php endif; ?>
+
+                  <?php if (isset($com)): ?>
+                    <div class="alert alert-danger text-white">
+                      <?= $com; ?>
+                    </div>
+                  <?php endif; ?>
+
+                  <?php if (isset($msg_create_account)): ?>
+                    <div class="alert alert-success text-white">
+                      <?= $msg_create_account; ?>
+                    </div>
+                  <?php endif; ?>
+
                   <div class="mb-3">
                     <input type="text" class="form-control" placeholder="Nom" aria-label="Nom" name="nom" required>
                   </div>
@@ -64,10 +114,20 @@
                     <input type="email" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="email-addon" name="email" required>
                   </div>
                   <div class="mb-3">
-                    <input type="password" class="form-control" placeholder="Mot de passe" aria-label="Password" aria-describedby="password-addon" name="mdp" required>
+                    <input type="number" class="form-control" placeholder="Numéro de téléphone" aria-label="telephone" aria-describedby="telephone-addon" name="telephone" required>
+                  </div>
+                  <div class="mb-3">
+                    <select name="role" id="role" class="form-control">
+                      <?php while($role = mysqli_fetch_assoc($res)): ?>
+                        <option value="<?= $role['nom'] ?>"><?= $role['nom'] ?></option>
+                      <?php endwhile; ?>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <input type="password" class="form-control" min="4" placeholder="Mot de passe" aria-label="Password" aria-describedby="password-addon" name="mdp" required>
                   </div>
                   <div class="text-center d-flex align-items-center">
-                    <button type="submit" class="btn bg-gradient-dark w-100 my-4 mb-2">S'inscrire
+                    <button type="submit" name="submit" class="btn bg-gradient-dark w-100 my-4 mb-2">S'inscrire
                       &nbsp;
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
                       <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>

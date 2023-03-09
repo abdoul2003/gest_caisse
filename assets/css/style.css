@@ -1,0 +1,44 @@
+.btn-accept {
+    padding: 5px 20px;
+    background-color: black;
+    color: white;
+    font-weight: bold;
+}
+
+.btn-accept:hover {
+    font-size: 1em;
+    color: white;
+}
+
+.btn-refuse {
+    padding: 5px 20px;
+    background-color: red;
+    color: white;
+    font-weight: bold;
+}
+
+.btn-refuse:hover {
+    font-size: 1em;
+    color: white;
+}
+/* .btn-edit {
+    padding: 5px 10px;
+    transition: 1ms background-color ease-in-out;
+}
+
+.btn-edit:hover {
+    background-color: black;
+    color: white;
+    font-size: 1em;
+} */
+
+.btn-trash {
+    padding: 5px 10px;
+    transition: 1ms background-color ease-in-out;
+}
+
+.btn-trash:hover {
+    font-size: 1em;
+    background-color: red;
+    color: white;
+}

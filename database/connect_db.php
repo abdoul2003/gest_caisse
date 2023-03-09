@@ -9,7 +9,7 @@ try {
 
     $conn = mysqli_connect(HOSTNAME, USERNAME, PASSWORD, DBNAME);
 
-    echo "Connexion réussie!";
+    // echo "Connexion réussie!";
 
 } catch (Exception $e) {
 

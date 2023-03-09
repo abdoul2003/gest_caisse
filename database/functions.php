@@ -1,30 +1,34 @@
 <?php
 require_once "connect_db.php";
 
+$connexion = $conn;
+
+define('CONN', $conn);
+
 function insert($req) {
 
-    $result = $conn->exec($req);
+    $result = mysqli_query(CONN, $req);
 
     return $result;
 }
 
 function update($req) {
 
-    $result = $conn->exec($req);
+    $result = mysqli_query(CONN, $req);
 
     return $result;
 }
 
 function delete($req) {
 
-    $result = $conn->exec($req);
+    $result = mysqli_query(CONN, $req);
 
     return $result;
 }
 
 function totalEntrees($req) {
 
-    $result = mysqli_query($conn, $req);
+    $result = mysqli_query(CONN, $req);
 
     $result = mysqli_fetch_assoc($result);
 
@@ -33,7 +37,7 @@ function totalEntrees($req) {
 
 function totalSorties($req) {
 
-    $result = mysqli_query($conn, $req);
+    $result = mysqli_query(CONN, $req);
 
     $result = mysqli_fetch_assoc($result);
 
@@ -43,7 +47,7 @@ function totalSorties($req) {
 
 function select($req) {
 
-    $result = mysqli_query($conn, $req);
+    $result = mysqli_query(CONN, $req);
 
     return $result;
 } 
