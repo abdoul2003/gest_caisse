@@ -1,16 +1,19 @@
 <?php
 session_start();
-require_once "./database/functions.php";
+require_once "database/functions.php";
 
-if (isset($_SESSION['user'])) {
-  $user = $_SESSION['user'];
+if (!isset($_SESSION['user_session'])) {
+
+  header('location: sign-in.php');
+
+} else {
+
+  $user = $_SESSION['user_session'];
+
 }
 
-$id = $user['id'];
-
-$req = "SELECT * FROM users WHERE id!=$id";
-
-$result = select($req);
+$query = "SELECT * FROM users WHERE role != 'caisse'";
+$res = select($query);
 
 ?>
 <?php include_once "header.php"; ?>
@@ -52,40 +55,18 @@ $result = select($req);
               <table class="table align-items-center mb-0">
                 <thead>
                   <tr>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">nom</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">prénoms</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">email</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">status</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">active</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">actions</th>
-                    <th class="text-secondary opacity-7"></th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">username</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">role</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <?php while ($user_db = mysqli_fetch_assoc($result)): ?>
+                  <?php while($user = mysqli_fetch_assoc($res)): ?>
                     <tr>
+                      <td><?= $user['username']; ?></td>
+                      <td><?= $user['role']; ?></td>
                       <td>
-                        <?= $user_db['nom']; ?>
-                      </td>
-                      <td>
-                        <?= $user_db['prenom']; ?>
-                      </td>
-                      <td>
-                        <?= $user_db['email']; ?>
-                      </td>
-                      <td>
-                        <?php echo ($user_db['status'] == 1) ? 'Connecté' : 'Déconnecté'; ?>
-                      </td>
-                      <td>
-                        <?php echo ($user_db['active'] == 1) ? 'Activé' : 'Désactivé'; ?>
-                      </td>
-                      <td>
-                        <form action="active_user.php" method="post">
-                          <input type="hidden" name="id_user" value="<?= $user_db['id'] ?>">
-                          <button type="submit" name="submit" class="btn btn-info btn-sm"><?php echo ($user_db['active'] == 1) ? 'Désactivé' : 'Activé' ?></button>
-                          &nbsp;
-                          <a href="deleteUser.php?idU=<?= $user_db['id'] ?>" class="btn btn-danger btn-sm">Supprimer</a>
-                        </form>
+                        <a onclick="return confirm('Etes-vous sûr de vouloir supprimer cet utilisateur ?');" class="btn btn-danger" href="deleteUser.php?idU=<?= $user['id']; ?>">Supprimer</a>
                       </td>
                     </tr>
                   <?php endwhile; ?>

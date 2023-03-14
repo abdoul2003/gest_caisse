@@ -1,11 +1,28 @@
 <?php
 session_start();
+require_once "database/functions.php";
 
-if (!isset($_SESSION['user'])) {
-  header('location: ./pages/sign-in.php');
-}else {
-  $user = $_SESSION['user'];
+if (isset($_SESSION['user_session'])) {
+
+  $user = $_SESSION['user_session'];
+
+} else {
+
+  header('location: sign-in.php');
+
 }
+
+$query1 = "SELECT SUM(mt_a) as total1 FROM entrees";
+$result1 = select($query1);
+$result1 = mysqli_fetch_assoc($result1);
+$total1 = $result1['total1'];
+
+$query2 = "SELECT SUM(mt) as total2 FROM depenses";
+$result2 = select($query2);
+$result2 = mysqli_fetch_assoc($result2);
+$total2 = $result2['total2'];
+
+$solde = $total1 - $total2;
 
 ?>
 <?php include_once "header.php"; ?>
@@ -45,7 +62,7 @@ if (!isset($_SESSION['user'])) {
                   <div class="numbers">
                     <p class="text-sm mb-0 text-capitalize font-weight-bold">Total Entrées</p>
                     <h5 class="font-weight-bolder mb-0">
-                      0 FCFA
+                      <?php echo isset($total1) ? $total1 : 0 ?> FCFA
                     </h5>
                   </div>
                 </div>
@@ -69,7 +86,7 @@ if (!isset($_SESSION['user'])) {
                   <div class="numbers">
                     <p class="text-sm mb-0 text-capitalize font-weight-bold">Total Sorties</p>
                     <h5 class="font-weight-bolder mb-0">
-                      0 FCFA
+                    <?php echo isset($total2) ? $total2 : 0 ?> FCFA
                     </h5>
                   </div>
                 </div>
@@ -93,7 +110,7 @@ if (!isset($_SESSION['user'])) {
                   <div class="numbers">
                     <p class="text-sm mb-0 text-capitalize font-weight-bold">Solde</p>
                     <h5 class="font-weight-bolder mb-0">
-                      0 FCFA
+                    <?php echo isset($solde) ? $solde : 0 ?> FCFA
                     </h5>
                   </div>
                 </div>

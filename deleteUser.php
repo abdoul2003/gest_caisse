@@ -1,5 +1,5 @@
 <?php
-require_once "./database/functions.php";
+require_once "database/functions.php";
 
 $idU = $_GET['idU'];
 

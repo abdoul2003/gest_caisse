@@ -1,8 +1,14 @@
 <?php
 session_start();
 
-if (isset($_SESSION['user'])) {
-  $user = $_SESSION['user'];
+if (isset($_SESSION['user_session'])) {
+
+  $user = $_SESSION['user_session'];
+
+} else {
+
+  header('location: sign-in.php');
+
 }
 
 ?>
@@ -34,11 +40,13 @@ if (isset($_SESSION['user'])) {
     </nav>
     <!-- End Navbar -->
     <div class="container-fluid py-4">
-      <div class="row">
-        <div class="col-md-12 text-center">
+      <div class="card text-center">
+        <div class="card-title">
           <h3>Besoin d'aide, veuillez me contactez</h3>
-          <p>Téléphone: <strong>93273948</strong></p>
-          <p>Email: <strong>abdoulsabours47@gmail.com</strong></p>
+        </div>
+        <div class="card-body">
+          <h5 class="text-lead">Téléphone: <strong>+228 93273948</strong></h5>
+          <h5 class="text-lead">Email: <strong>abdoulsabours47@gmail.com</strong></h5>
         </div>
       </div>
       <footer class="footer pt-3  ">

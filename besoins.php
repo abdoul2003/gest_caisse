@@ -1,24 +1,36 @@
 <?php
 session_start();
-require_once "./database/functions.php";
+require_once "database/functions.php";
 
-if (!isset($_SESSION['user'])) {
-  header('location: ./pages/sign-in.php');
-}else {
-  $user = $_SESSION['user'];
+if (!isset($_SESSION['user_session'])) {
+
+  header('location: sign-in.php');
+
+} else {
+
+  $user = $_SESSION['user_session'];
+
 }
 
-if (isset($_SESSION['message'])) {
-    $message = $_SESSION['message'];
-    unset($_SESSION['message']);
-}
+$query = "SELECT id,designation,qte,prixU,montant,payement,status,date FROM besoins ORDER BY payement, status";
+$result = select($query);
 
-$req = "SELECT count(*) as nbrSo FROM societe";
-$res = select($req);
+$query2 = "SELECT SUM(montant) as total FROM besoins WHERE status='accepté' AND payement=0";
+$result2 = select($query2);
+$result2 = mysqli_fetch_assoc($result2);
+$total = $result2['total'];
 
-$so = mysqli_fetch_assoc($res);
+$query3 = "SELECT id,designation,payement,date,status,qte,prixU,montant,status FROM besoins WHERE status='en attente'";
+$result3 = select($query3);
 
-$nbrSo = $so['nbrSo'];
+$query5 = "SELECT id,designation,payement,date,status,qte,prixU,montant,status FROM besoins WHERE payement=0 and status='accepté'";
+$result5 = select($query5);
+
+$query4 = "SELECT count(*) as besoinsEnAttente FROM besoins WHERE status='en attente'";
+$result4 = select($query4);
+$result4 = mysqli_fetch_assoc($result4);
+
+$besoinsEnAttente = $result4['besoinsEnAttente'];
 
 ?>
 <?php include_once "header.php"; ?>
@@ -49,58 +61,110 @@ $nbrSo = $so['nbrSo'];
     </nav>
     <!-- End Navbar -->
     <div class="container-fluid py-4">
-
-        <h2>Ajouter un besoin <a href="listBesoins.php" class="btn btn-success float-end">Liste des besoins</a></h2>
-        
-        <form action="ajout_besoin.php" method="post">
-            
-            <?php if(isset($message)): ?>
-
-                <div class="alert alert-success">
-                    <?= $message; ?>
-                </div>
-
+        <div class="card">
+          <div class="card-body">
+            <?php if($user['role'] != 'directeur'): ?>
+              <a href="exprimerBesoin.php" class="btn btn-info">Exprimer vos besoins</a>
             <?php endif; ?>
-
-            <?php if ($nbrSo < 1): ?>
-
-                <div class="form-group">
-                    <label for="societe" class="form-label">Société</label>
-                    <input type="text" name="societe" id="societe" placeholder="Nom de la société" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="motif" class="form-label">Motif</label>
-                    <input type="text" name="motif" id="motif" placeholder="Motif" class="form-control" required>
-                </div>
-
+            <?php if($user['role'] == 'directeur' || $user['role'] == 'caisse'): ?>
+              <h5 class="float-end">Total à payer: <strong><?php echo isset($total) ? $total : 0 ?> FCFA</strong></h5>
             <?php endif; ?>
-
-            <div class="form-group">
-                <label for="date" class="form-label">Date</label>
-                <input type="date" name="date" id="date" placeholder="Date" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="designation" class="form-label">Désignation</label>
-                <textarea name="designation" id="designation" cols="30" rows="10" class="form-control"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="qte" class="form-label">Quantité</label>
-                <input type="number" name="qte" id="qte" placeholder="Quantité" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="prix_uni" class="form-label">Prix unitaire estimatif</label>
-                <input type="number" name="prix_uni" id="prix_uni" placeholder="Prix unitaire" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="montant_esti" class="form-label">Montant estimatif</label>
-                <input type="number" name="montant_esti" id="montant_esti" placeholder="Montant" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <input type="submit" class="btn btn-secondary btn-sm" value='Ajouter' name="submit">
-                &nbsp;
-                <input type="reset" class="btn btn-danger btn-sm" value='Annuler'>
-            </div>
-        </form>
+            <?php if($user['role'] == 'caisse'): ?>
+              <table class="table align-items-center mb-0">
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">désignation</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">quantité</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">prix unitaire estimatif</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant estimatif</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">payement</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">status</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">date</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php while($besoin = mysqli_fetch_assoc($result5)): ?>
+                      <tr>
+                        <td><?= $besoin['designation']; ?></td>
+                        <td><?= $besoin['qte']; ?></td>
+                        <td><?= $besoin['prixU']; ?> FCFA</td>
+                        <td><?= $besoin['montant']; ?> FCFA</td>
+                        <td><?php echo ($besoin['payement'] == 0) ? 'En attente' : 'Payé'; ?></td>
+                        <td><?= ucfirst($besoin['status']); ?></td>
+                        <td><?= $besoin['date']; ?></td>
+                        <td>
+                          <?php if ($user['role'] == 'caisse' AND $besoin['status'] == 'accepté' AND $besoin['payement'] == 0): ?>
+                            <a class="btn btn-dark" href="validerBesoin.php?idB=<?= $besoin['id']; ?>">Payer</a>
+                          <?php endif; ?>
+                        </td>
+                      </tr>
+                    <?php endwhile; ?>
+                </tbody>
+              </table>
+            <?php endif; ?>
+            <?php if($user['role'] == 'directeur'): ?>
+              <table class="table align-items-center mb-0">
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">désignation</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">quantité</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">prix unitaire estimatif</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant estimatif</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">status</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php if($besoinsEnAttente > 0): ?>
+                    <?php while($besoin2 = mysqli_fetch_assoc($result3)): ?>
+                      <tr>
+                        <td><?= $besoin2['designation']; ?></td>
+                        <td><?= $besoin2['qte']; ?></td>
+                        <td><?= $besoin2['prixU']; ?> FCFA</td>
+                        <td><?= $besoin2['montant']; ?> FCFA</td>
+                        <td><?= ucfirst($besoin2['status']); ?></td>
+                        <td>
+                          <a class="btn btn-danger" href="refuserBesoin.php?idB=<?= $besoin2['id']; ?>">Refuser</a>
+                          &nbsp;
+                          <a class="btn btn-primary" href="accepterBesoin.php?idB=<?= $besoin2['id']; ?>">Accepter</a>
+                        </td>
+                      </tr>
+                    <?php endwhile; ?>
+                  <?php else: ?>
+                      <tr>
+                        <td colspan="6" align="center">Aucun besoin en attente</td>
+                      </tr>
+                  <?php endif; ?>
+                </tbody>
+              </table>
+            <?php endif; ?>
+            <?php if($user['role'] == 'rac' || $user['role'] == 'comptabilite'): ?>
+              <table class="table align-items-center mb-0">
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">désignation</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">quantité</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">prix unitaire estimatif</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant estimatif</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php while($besoin = mysqli_fetch_assoc($result5)): ?>
+                    <tr>
+                      <td><?= $besoin['designation']; ?></td>
+                      <td><?= $besoin['qte']; ?></td>
+                      <td><?= $besoin['prixU']; ?> FCFA</td>
+                      <td><?= $besoin['montant']; ?> FCFA</td>
+                      <td><?= $besoin['date']; ?></td>
+                    </tr>
+                  <?php endwhile; ?>
+                </tbody>
+              </table>
+            <?php endif; ?>
+          </div>
+        </div>
         <footer class="footer pt-3  ">
             <div class="container-fluid">
             <div class="row align-items-center justify-content-lg-between">

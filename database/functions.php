@@ -26,25 +26,6 @@ function delete($req) {
     return $result;
 }
 
-function totalEntrees($req) {
-
-    $result = mysqli_query(CONN, $req);
-
-    $result = mysqli_fetch_assoc($result);
-
-    return $result;
-}
-
-function totalSorties($req) {
-
-    $result = mysqli_query(CONN, $req);
-
-    $result = mysqli_fetch_assoc($result);
-
-    return $result;
-}
-
-
 function select($req) {
 
     $result = mysqli_query(CONN, $req);

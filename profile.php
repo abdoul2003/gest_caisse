@@ -1,11 +1,18 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user'])) {
-  header('location: ./pages/sign-in.php');
-}else {
-  $user = $_SESSION['user'];
+if (!isset($_SESSION['user_session'])) {
+
+  header('location: sign-in.php');
+
+} else {
+
+  $user = $_SESSION['user_session'];
+
 }
+
+$mdp = $user['mdp'];
+$taille = strlen($mdp);
 
 ?>
 <?php include_once "header.php"; ?>
@@ -45,24 +52,17 @@ if (!isset($_SESSION['user'])) {
                 </div>
               </div>
             </div>
-            <div class="card-body p-3">
+            <div class="card-body text-center p-3">
               <hr class="horizontal gray-light my-2">
-              <ul class="list-group">
-                <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Nom complet:</strong> &nbsp; <?= $user['nom']; ?>&nbsp;<?= $user['prenom']; ?></li>
-                <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Email:</strong> &nbsp; <?= $user['email']; ?></li>
-                <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Téléphone:</strong> &nbsp; <?= $user['telephone']; ?></li>
-                <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Rôle:</strong> &nbsp; <?php
-                  if ($user['role'] == 'comptabilite') {
-                    echo 'Comptable';
-                  } else if ($user['role'] == 'rac') {
-                    echo 'R.A.C';
-                  } else if ($user['role'] == 'directeur') {
-                    echo 'Directeur';
-                  } else {
-                    echo 'Caissière';
+              <h3>Username: <?= $user['username']; ?></h3>
+              <h3>Mot de passe: 
+                <?php
+                  for ($i=0; $i < $taille; $i++) { 
+                    echo '*';
                   }
-                ?></li>
-              </ul>
+                ?>
+              </h3>
+              <a href="editer_prof.php?id_u=<?php echo $user['id']; ?>" class="btn btn-danger mt-2">Editer ton profile</a>
             </div>
           </div>
         </div>

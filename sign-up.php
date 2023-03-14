@@ -1,38 +1,27 @@
 <?php
 session_start();
-require_once "../database/functions.php";
+require_once "database/functions.php";
 
-$req = "SELECT *
-        FROM roles";
-$res = select($req);
+$roles = ['caisse', 'comptabilite', 'rac', 'directeur'];
 
-
-if (isset($_SESSION['msg_email_telephone'])) {
-  $msg_email_telephone = $_SESSION['msg_email_telephone'];
+if (isset($_SESSION['account_is_create'])) {
+  $account_is_create = $_SESSION['account_is_create'];
 }
-
-if (isset($_SESSION['msg_create_account'])) {
-  $msg_create_account = $_SESSION['msg_create_account'];
+if (isset($_SESSION['password_is_incorrect'])) {
+  $password_is_incorrect = $_SESSION['password_is_incorrect'];
 }
-
-if (isset($_SESSION['comptable_exist'])) {
-  $comptable_exist = $_SESSION['comptable_exist'];
+if (isset($_SESSION['username_exist'])) {
+  $username_exist = $_SESSION['username_exist'];
 }
-
-if (isset($_SESSION['rac_exist'])) {
-  $rac_exist = $_SESSION['rac_exist'];
+if (isset($_SESSION['user_role'])) {
+  $user_role = $_SESSION['user_role'];
 }
-
-if (isset($_SESSION['directeur_exist'])) {
-  $directeur_exist = $_SESSION['directeur_exist'];
-}
-
 
 session_destroy();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -42,16 +31,16 @@ session_destroy();
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
   <!-- Nucleo Icons -->
-  <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
-  <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+  <link href="assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="assets/css/nucleo-svg.css" rel="stylesheet" />
   <!-- Font Awesome Icons -->
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-  <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+  <link href="assets/css/nucleo-svg.css" rel="stylesheet" />
   <!-- CSS Files -->
-  <link id="pagestyle" href="../assets/css/soft-ui-dashboard.css?v=1.0.7" rel="stylesheet" />
+  <link id="pagestyle" href="assets/css/soft-ui-dashboard.css?v=1.0.7" rel="stylesheet" />
 </head>
 
-<body class="">
+<body>
   <!-- End Navbar -->
   <main class="main-content  mt-0">
     <section class="min-vh-100 mb-8">
@@ -73,57 +62,45 @@ session_destroy();
               <div class="card-body">
                 <form role="form text-left" action="sign-up-script.php" method="POST">
                   
-                  <?php if (isset($msg_email_telephone)): ?>
-                    <div class="alert alert-danger text-white">
-                      <?= $msg_email_telephone; ?>
-                    </div>
-                  <?php endif; ?>
-
-                  <?php if (isset($rac_exist)): ?>
-                    <div class="alert alert-danger text-white">
-                      <?= $rac_exist; ?>
-                    </div>
-                  <?php endif; ?>
-
-                  <?php if (isset($directeur_exist)): ?>
-                    <div class="alert alert-danger text-white">
-                      <?= $directeur_exist; ?>
-                    </div>
-                  <?php endif; ?>
-
-                  <?php if (isset($com)): ?>
-                    <div class="alert alert-danger text-white">
-                      <?= $com; ?>
-                    </div>
-                  <?php endif; ?>
-
-                  <?php if (isset($msg_create_account)): ?>
+                  <?php if(isset($account_is_create)): ?>
                     <div class="alert alert-success text-white">
-                      <?= $msg_create_account; ?>
+                      <?= $account_is_create; ?>
                     </div>
                   <?php endif; ?>
 
+                  <?php if(isset($password_is_incorrect)): ?>
+                    <div class="alert alert-danger text-white">
+                      <?= $password_is_incorrect; ?>
+                    </div>
+                  <?php endif; ?>
+
+                  <?php if(isset($username_exist)): ?>
+                    <div class="alert alert-danger text-white">
+                      <?= $username_exist; ?>
+                    </div>
+                  <?php endif; ?>
+
+                  <?php if(isset($user_role)): ?>
+                    <div class="alert alert-danger text-white">
+                      <?= $user_role; ?>
+                    </div>
+                  <?php endif; ?>
+                  
                   <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Nom" aria-label="Nom" name="nom" required>
+                    <input type="text" class="form-control" name="username" placeholder="Username" required>
                   </div>
                   <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Prénoms" aria-label="Prénoms" name="prenom" required>
+                    <input type="password" class="form-control" placeholder="Mot de passe" name="mdp" required>
                   </div>
                   <div class="mb-3">
-                    <input type="email" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="email-addon" name="email" required>
+                    <input type="password" class="form-control" placeholder="Confirmer votre mot de passe" name="mdp2" required>
                   </div>
                   <div class="mb-3">
-                    <input type="number" class="form-control" placeholder="Numéro de téléphone" aria-label="telephone" aria-describedby="telephone-addon" name="telephone" required>
-                  </div>
-                  <div class="mb-3">
-                    <select name="role" id="role" class="form-control">
-                      <?php while($role = mysqli_fetch_assoc($res)): ?>
-                        <option value="<?= $role['nom'] ?>"><?= $role['nom'] ?></option>
-                      <?php endwhile; ?>
+                    <select name="role"class="form-control">
+                      <?php foreach($roles as $role): ?>
+                        <option value="<?= $role ?>"><?= $role ?></option>
+                      <?php endforeach; ?>
                     </select>
-                  </div>
-                  <div class="mb-3">
-                    <input type="password" class="form-control" min="4" placeholder="Mot de passe" aria-label="Password" aria-describedby="password-addon" name="mdp" required>
                   </div>
                   <div class="text-center d-flex align-items-center">
                     <button type="submit" name="submit" class="btn bg-gradient-dark w-100 my-4 mb-2">S'inscrire
@@ -159,10 +136,10 @@ session_destroy();
     <!-- -------- END FOOTER 3 w/ COMPANY DESCRIPTION WITH LINKS & SOCIAL ICONS & COPYRIGHT ------- -->
   </main>
   <!--   Core JS Files   -->
-  <script src="../assets/js/core/popper.min.js"></script>
-  <script src="../assets/js/core/bootstrap.min.js"></script>
-  <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
-  <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <script src="assets/js/core/popper.min.js"></script>
+  <script src="assets/js/core/bootstrap.min.js"></script>
+  <script src="assets/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="assets/js/plugins/smooth-scrollbar.min.js"></script>
   <script>
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -175,7 +152,7 @@ session_destroy();
   <!-- Github buttons -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="../assets/js/soft-ui-dashboard.min.js?v=1.0.7"></script>
+  <script src="assets/js/soft-ui-dashboard.min.js?v=1.0.7"></script>
 </body>
 
 </html>

@@ -1,36 +1,23 @@
 <?php
 session_start();
-require_once "./database/functions.php";
+require_once "database/functions.php";
 
 if (isset($_POST['submit'])) {
-    $societe = $_POST['societe'];
-    $motif = $_POST['motif'];
-    $date = $_POST['date'];
+
     $designation = addslashes($_POST['designation']);
     $qte = $_POST['qte'];
-    $prix_uni = $_POST['prix_uni'];
-    $montant_esti = $_POST['montant_esti'];
+    $prixU = $_POST['prixU'];
+    $date = $_POST['date'];
 
-    $req3 = "SELECT count(*) as nbrSo FROM societe";
-    $res3 = select($req3);
+    $montant = $prixU * $qte;
 
-    $so = mysqli_fetch_assoc($res3);
+    $req = "INSERT INTO besoins(id,designation,qte,prixU,montant,date) VALUES(NULL,'$designation',$qte,$prixU,$montant,'$date')";
+    $res = insert($req);
 
-    $nbrSo = $so['nbrSo'];
+    $_SESSION['besoin_ajouter'] = "Le besoin a été enregistrer avec succès !";
 
-    if ($nbrSo < 1) {
-        $req2 = "INSERT INTO societe VALUES('". strtoupper($societe) . "','$motif')";
-        $res2 = mysqli_query(CONN, $req2);
-    }
+    header('location: exprimerBesoin.php');
 
-    $req = "INSERT INTO besoins(id,designation,qte,prix_unitaire_es,mt_es,date) VALUES(NULL,'$designation',$qte,$prix_uni,$montant_esti,'$date')";
-    $res = mysqli_query(CONN, $req);
-
-    if ($res) {
-        $_SESSION['message'] = 'Besoin ajouté avec succès';
-
-        header('location: besoins.php');
-    }
 }
 
 ?>

@@ -1,12 +1,8 @@
 <?php
 session_start();
 
-if (isset($_SESSION['msg_conn'])) {
-  $msg_conn = $_SESSION['msg_conn'];
-}
-
-if (isset($_SESSION['user_conn_msg'])) {
-  $user_conn_msg = $_SESSION['user_conn_msg'];
+if (isset($_SESSION['user_not_found'])) {
+  $user_not_found = $_SESSION['user_not_found'];
 }
 
 session_destroy();
@@ -24,13 +20,13 @@ session_destroy();
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
   <!-- Nucleo Icons -->
-  <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
-  <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+  <link href="assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="assets/css/nucleo-svg.css" rel="stylesheet" />
   <!-- Font Awesome Icons -->
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-  <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+  <link href="assets/css/nucleo-svg.css" rel="stylesheet" />
   <!-- CSS Files -->
-  <link id="pagestyle" href="../assets/css/soft-ui-dashboard.css?v=1.0.7" rel="stylesheet" />
+  <link id="pagestyle" href="assets/css/soft-ui-dashboard.css?v=1.0.7" rel="stylesheet" />
 </head>
 
 <body class="">
@@ -47,22 +43,6 @@ session_destroy();
                 <span class="navbar-toggler-bar bar3"></span>
               </span>
             </button>
-            <div class="collapse navbar-collapse" id="navigation">
-              <ul class="navbar-nav mx-auto ms-xl-auto me-xl-7">
-                <li class="nav-item">
-                  <a class="nav-link me-2" href="sign-up.php">
-                    <i class="fas fa-user-circle opacity-6 text-dark me-1"></i>
-                    S'inscrire
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link me-2" href="sign-in.php">
-                    <i class="fas fa-key opacity-6 text-dark me-1"></i>
-                    Se connecter
-                  </a>
-                </li>
-              </ul>
-            </div>
           </div>
         </nav>
         <!-- End Navbar -->
@@ -77,27 +57,21 @@ session_destroy();
             <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
               <div class="card card-plain mt-8">
                 <div class="card-header pb-0 text-left bg-transparent">
-                  <h3 class="font-weight-bolder text-info text-gradient">Bienvenue sur votre application de gestion de caisse</h3>
-                  <p class="mb-0">Entrez votre email et votre mot de passe</p>
+                  <h3 class="font-weight-bolder text-info text-gradient">ITEBEMA SARLU - GestionCaisse</h3>
+                  <p class="mb-0">Entrez votre username et votre mot de passe</p>
                 </div>
                 <div class="card-body">
                   <form role="form" method="GET" action="sign-in-script.php">
-
-                    <?php if (isset($user_conn_msg)): ?>
+                    
+                    <?php if(isset($user_not_found)): ?>
                       <div class="alert alert-danger text-white">
-                        <?= $user_conn_msg; ?>
+                        <?= $user_not_found; ?>
                       </div>
                     <?php endif; ?>
 
-                    <?php if (isset($msg_conn)): ?>
-                      <div class="alert alert-danger text-white">
-                        <?= $msg_conn; ?>
-                      </div>
-                    <?php endif; ?>
-
-                    <label>Email</label>
+                    <label>Username</label>
                     <div class="mb-3">
-                      <input type="email" class="form-control" name="email" placeholder="Email" required>
+                      <input type="text" class="form-control" name="username" placeholder="Username" required>
                     </div>
                     <label>Mot de passe</label>
                     <div class="mb-3">
