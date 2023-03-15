@@ -1,9 +1,15 @@
 <?php
 session_start();
+require_once "database/functions.php";
 
 if (isset($_SESSION['user_not_found'])) {
   $user_not_found = $_SESSION['user_not_found'];
 }
+
+$query = "SELECT count(*) as user FROM users";
+$result = select($query);
+$result = mysqli_fetch_assoc($result);
+$nbrU = $result['user'];
 
 session_destroy();
 ?>
@@ -54,11 +60,11 @@ session_destroy();
       <div class="page-header min-vh-75">
         <div class="container">
           <div class="row">
-            <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
+            <div class="col-xl-8 col-lg-5 col-md-6 d-flex flex-column mx-auto">
               <div class="card card-plain mt-8">
                 <div class="card-header pb-0 text-left bg-transparent">
-                  <h3 class="font-weight-bolder text-info text-gradient">ITEBEMA SARLU - GestionCaisse</h3>
-                  <p class="mb-0">Entrez votre username et votre mot de passe</p>
+                  <h3 class="font-weight-bolder text-center text-info text-gradient">ITEBEMA SARLU - GestionCaisse</h3>
+                  <p class="mb-0 text-center">Entrez votre username et votre mot de passe</p>
                 </div>
                 <div class="card-body">
                   <form role="form" method="GET" action="sign-in-script.php">
@@ -85,13 +91,10 @@ session_destroy();
                       </svg>
                       </button>
                     </div>
+                    <?php if ($nbrU == 0): ?>
+                      <p><a href="createAdminAccount.php" class="mt-3 btn btn-outline-secondary btn-sm">Créer un compte</a></p>
+                    <?php endif; ?>
                   </form>
-                </div>
-                <div class="card-footer text-center pt-0 px-lg-2 px-1">
-                  <p class="mb-4 text-sm mx-auto">
-                    Vous n'avez pas de compte?
-                    <a href="sign-up.php" class="text-info text-gradient font-weight-bold">S'inscrire</a>
-                  </p>
                 </div>
               </div>
             </div>

@@ -65,22 +65,8 @@ if (isset($_SESSION['besoin_ajouter'])) {
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="qte">Quantité</label>
-                            <input type="number" name="qte" class="form-control" placeholder="Quantité" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="prixU">Prix Unitaire Estimatif</label>
-                            <input type="number" name="prixU" class="form-control" placeholder="Prix unitaire" required>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="date">Date</label>
-                            <input type="date" name="date" class="form-control" placeholder="Date" required>
+                            <label for="montant_de">Montant demandé</label>
+                            <input type="number" name="montant_de" class="form-control" placeholder="Montant demandé" required>
                         </div>
                     </div>
                 </div>

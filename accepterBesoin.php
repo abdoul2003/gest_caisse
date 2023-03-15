@@ -1,12 +1,16 @@
 <?php
 require_once "database/functions.php";
 
-$idB = isset($_GET['idB']) ? $_GET['idB'] : 0;
+if (isset($_POST['montant_accorde'], $_POST['idB'])) {
 
-$req = "UPDATE besoins SET status='accepté' WHERE id=$idB";
+    $idB = $_POST['idB'];
+    $montant_accorde = $_POST['montant_accorde'];
 
-$res = update($req);
+    $req = "UPDATE besoins SET status='accepté', montant_accorde=$montant_accorde WHERE id=$idB";
+    $res = update($req);
+    header('location: besoins.php');
+}
 
-header('location: besoins.php');
+
 
 ?>

@@ -12,7 +12,7 @@ if (!isset($_SESSION['user_session'])) {
 
 }
 
-$query = "SELECT * FROM users WHERE user!='admin'";
+$query = "SELECT * FROM profile";
 $res = select($query);
 
 ?>
@@ -25,7 +25,7 @@ $res = select($query);
   <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
     <div class="container-fluid py-1 px-3">
       <nav aria-label="breadcrumb">
-        <h6 class="font-weight-bolder mb-0">Utilisateurs</h6>
+        <h6 class="font-weight-bolder mb-0">Liste des profiles</h6>
       </nav>
       <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
         <ul class="navbar-nav justify-content-end">
@@ -47,31 +47,21 @@ $res = select($query);
     <div class="row">
       <div class="col-12">
         <div class="card mb-4">
-          <div class="card-header pb-0">
-            <h6>Liste des utilisateurs</h6>
-            <a href="createProfile.php" class="btn btn-secondary">Créer un profile</a>
-            &nbsp;&nbsp;
-            <a href="allProfile.php" class="btn btn-outline-dark">Liste des profiles</a>
-          </div>
           <div class="card-body px-0 pt-0 pb-2">
             <div class="table-responsive p-0">
               <table class="table align-items-center mb-0">
                 <thead>
                   <tr>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">username</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">profile</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <?php while($user = mysqli_fetch_assoc($res)): ?>
+                  <?php while($profile = mysqli_fetch_assoc($res)): ?>
                     <tr>
-                      <td><?= $user['username']; ?></td>
-                      <td><?= $user['role']; ?></td>
+                      <td><?= $profile['profile']; ?></td>
                       <td>
-                        <a onclick="return confirm('Etes-vous sûr de vouloir supprimer cet utilisateur ?');" class="btn btn-danger" href="deleteUser.php?idU=<?= $user['id']; ?>">Supprimer</a>
-                        &nbsp;
-                        <a class="btn btn-primary" href="change_profile_user.php?idU=<?= $user['id']; ?>">Attribuer un profile</a>
+                        <a onclick="return confirm('Etes-vous sûr de vouloir supprimer ce profile ?');" class="btn btn-danger" href="deleteProfile.php?idP=<?= $profile['id']; ?>">Supprimer</a>
                       </td>
                     </tr>
                   <?php endwhile; ?>

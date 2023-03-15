@@ -2,16 +2,6 @@
 session_start();
 require_once "database/functions.php";
 
-if (!isset($_SESSION['user_session'])) {
-
-  header('location: sign-in.php');
-
-} else {
-
-  $user = $_SESSION['user_session'];
-
-}
-
 if (isset($_SESSION['account_is_create'])) {
   $account_is_create = $_SESSION['account_is_create'];
   unset($_SESSION['account_is_create']);
@@ -27,36 +17,42 @@ if (isset($_SESSION['username_exist'])) {
 
 
 ?>
-<?php include_once "header.php"; ?>
-  <!-- End Navbar -->
-  <?php include_once "navbar.php"; ?>
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="./assets/img/apple-icon.png">
+  <title>
+    Créer un compte
+  </title>
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+  <link href="./assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="./assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <!-- <link rel="stylesheet" href="./assets/css/bootstrap.min.css"> -->
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link href="./assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <link id="pagestyle" href="./assets/css/soft-ui-dashboard.css?v=1.0.7" rel="stylesheet" />
+</head>
+
+<body class="g-sidenav-show  bg-gray-100">
 
     <div class="main-content position-relative bg-gray-100 max-height-vh-100 h-100">
 
-      <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
-        <div class="container-fluid py-1 px-3">
-          <nav aria-label="breadcrumb">
-            <h6 class="font-weight-bolder mb-0">Créer un nouveau utilisateur</h6>
-          </nav>
-          <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
-            <ul class="navbar-nav justify-content-end">
-              <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
-                <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
-                  <div class="sidenav-toggler-inner">
-                    <i class="sidenav-toggler-line"></i>
-                    <i class="sidenav-toggler-line"></i>
-                    <i class="sidenav-toggler-line"></i>
-                  </div>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
+    <h6 class="font-weight-bolder mb-0 text-center">Créer votre compte</h6>
+
       <div class="container">
       <div class="card z-index-0">
               <div class="card-body">
-                <form role="form text-left" action="sign-up-script.php" method="POST">
+                <form role="form text-left" action="admin_account.php" method="POST">
                   
                   <?php if(isset($account_is_create)): ?>
                     <div class="alert alert-success text-white">

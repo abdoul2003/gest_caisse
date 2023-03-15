@@ -78,19 +78,13 @@ if (isset($_SESSION['entree_ajouter'])) {
                 </div>
 
                 <div class="row mb-2">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label for="date">Date</label>
-                            <input type="date" name="date" class="form-control" placeholder="Date" required>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <div class="form-group">
                             <label for="mt_d">Montant demandé</label>
                             <input type="number" name="mt_d" class="form-control" placeholder="Montant demandé" required>
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <div class="form-group">
                             <label for="mt_a">Montant accordé</label>
                             <input type="number" name="mt_a" class="form-control" placeholder="Montant accordé" required>

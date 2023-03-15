@@ -24,23 +24,22 @@ if (isset($_POST['submit'])) {
 
     if (verifierMdp($mdp, $mdp2)) {
 
-      $req = "INSERT INTO users(id,username,mdp) VALUES(NULL,'$username','$mdp')";
+      $req = "INSERT INTO users(id,username,mdp,user) VALUES(NULL,'$username','$mdp', 'admin')";
       $res = insert($req);
 
-      $_SESSION['account_is_create'] = 'Votre compte a été crééé avec succès !';
-      header('location: sign-up.php');
+      header('location: sign-in.php');
 
     } else {
 
       $_SESSION['password_is_incorrect'] = 'Les mots de passe ne sont pas identiques !';
-      header('location: sign-up.php');
+      header('location: createAdminAccount.php');
 
     }
 
   } else {
 
     $_SESSION['username_exist'] = 'Votre username est déjà pris. Veuillez choisir un autre !';
-    header('location: sign-up.php');
+    header('location: createAdminAccount.php');
 
   }
 

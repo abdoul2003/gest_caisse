@@ -7,7 +7,7 @@ if (isset($_POST['submit'])) {
     $beneficiaire = addslashes($_POST['benefi']);
     $source = addslashes($_POST['source']);
     $motif = addslashes($_POST['motif']);
-    $date = $_POST['date'];
+    $date = date('Y-m-d');
     $mt_d = $_POST['mt_d'];
     $mt_a = $_POST['mt_a'];
     $moyen_paye = $_POST['moyen_paye'];

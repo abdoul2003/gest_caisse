@@ -12,18 +12,15 @@ if (!isset($_SESSION['user_session'])) {
 
 }
 
-$query = "SELECT id,designation,qte,prixU,montant,payement,status,date FROM besoins ORDER BY payement, status";
-$result = select($query);
-
-$query2 = "SELECT SUM(montant) as total FROM besoins WHERE status='accepté' AND payement=0";
+$query2 = "SELECT SUM(montant_accorde) as total FROM besoins WHERE status='accepté' AND payement=0";
 $result2 = select($query2);
 $result2 = mysqli_fetch_assoc($result2);
 $total = $result2['total'];
 
-$query3 = "SELECT id,designation,payement,date,status,qte,prixU,montant,status FROM besoins WHERE status='en attente'";
+$query3 = "SELECT id,designation,montant FROM besoins WHERE status='en attente'";
 $result3 = select($query3);
 
-$query5 = "SELECT id,designation,payement,date,status,qte,prixU,montant,status FROM besoins WHERE payement=0 and status='accepté'";
+$query5 = "SELECT id,designation,montant,montant_accorde,payement,status,date FROM besoins WHERE payement=0 and status='accepté'";
 $result5 = select($query5);
 
 $query4 = "SELECT count(*) as besoinsEnAttente FROM besoins WHERE status='en attente'";
@@ -63,8 +60,10 @@ $besoinsEnAttente = $result4['besoinsEnAttente'];
     <div class="container-fluid py-4">
         <div class="card">
           <div class="card-body">
-            <?php if($user['role'] != 'directeur'): ?>
+            <?php if($user['role'] == 'comptabilite' || $user['role'] == 'caisse' || $user['role'] == 'rac'): ?>
               <a href="exprimerBesoin.php" class="btn btn-info">Exprimer vos besoins</a>
+              &nbsp;
+              <a href="printBesoins.php" class="btn btn-outline-danger">Imprimer</a>
             <?php endif; ?>
             <?php if($user['role'] == 'directeur' || $user['role'] == 'caisse'): ?>
               <h5 class="float-end">Total à payer: <strong><?php echo isset($total) ? $total : 0 ?> FCFA</strong></h5>
@@ -74,9 +73,8 @@ $besoinsEnAttente = $result4['besoinsEnAttente'];
                 <thead>
                   <tr>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">désignation</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">quantité</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">prix unitaire estimatif</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant estimatif</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant demandé</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant accordé</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">payement</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">status</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">date</th>
@@ -87,15 +85,20 @@ $besoinsEnAttente = $result4['besoinsEnAttente'];
                   <?php while($besoin = mysqli_fetch_assoc($result5)): ?>
                       <tr>
                         <td><?= $besoin['designation']; ?></td>
-                        <td><?= $besoin['qte']; ?></td>
-                        <td><?= $besoin['prixU']; ?> FCFA</td>
                         <td><?= $besoin['montant']; ?> FCFA</td>
+                        <td>
+                          <?php
+                            if (!empty($besoin['montant_accorde'])) {
+                              echo $besoin['montant_accorde'] . ' FCFA';
+                            }
+                          ?>
+                        </td>
                         <td><?php echo ($besoin['payement'] == 0) ? 'En attente' : 'Payé'; ?></td>
                         <td><?= ucfirst($besoin['status']); ?></td>
                         <td><?= $besoin['date']; ?></td>
                         <td>
                           <?php if ($user['role'] == 'caisse' AND $besoin['status'] == 'accepté' AND $besoin['payement'] == 0): ?>
-                            <a class="btn btn-dark" href="validerBesoin.php?idB=<?= $besoin['id']; ?>">Payer</a>
+                            <a class="btn btn-dark" href="validerBesoin.php?idB=<?= $besoin['id']; ?>">Approvisionner la caisse</a>
                           <?php endif; ?>
                         </td>
                       </tr>
@@ -108,10 +111,8 @@ $besoinsEnAttente = $result4['besoinsEnAttente'];
                 <thead>
                   <tr>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">désignation</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">quantité</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">prix unitaire estimatif</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant estimatif</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">status</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant demandé</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant accordé</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">actions</th>
                   </tr>
                 </thead>
@@ -120,15 +121,18 @@ $besoinsEnAttente = $result4['besoinsEnAttente'];
                     <?php while($besoin2 = mysqli_fetch_assoc($result3)): ?>
                       <tr>
                         <td><?= $besoin2['designation']; ?></td>
-                        <td><?= $besoin2['qte']; ?></td>
-                        <td><?= $besoin2['prixU']; ?> FCFA</td>
                         <td><?= $besoin2['montant']; ?> FCFA</td>
-                        <td><?= ucfirst($besoin2['status']); ?></td>
-                        <td>
-                          <a class="btn btn-danger" href="refuserBesoin.php?idB=<?= $besoin2['id']; ?>">Refuser</a>
-                          &nbsp;
-                          <a class="btn btn-primary" href="accepterBesoin.php?idB=<?= $besoin2['id']; ?>">Accepter</a>
-                        </td>
+                        <form action="accepterBesoin.php" method="post">
+                          <td>
+                            <input type="hidden" name="idB" value="<?= $besoin2['id']; ?>" class="form-control w-12">
+                            <input type="number" name="montant_accorde" class="w-50 form-control" required>
+                          </td>
+                          <td>
+                            <a class="btn btn-danger" href="refuserBesoin.php?idB=<?= $besoin2['id']; ?>">Refuser</a>
+                            &nbsp;
+                            <button class="btn btn-primary" type="submit" name="submit">Accepter</button>
+                          </td>
+                        </form>
                       </tr>
                     <?php endwhile; ?>
                   <?php else: ?>
@@ -144,9 +148,8 @@ $besoinsEnAttente = $result4['besoinsEnAttente'];
                 <thead>
                   <tr>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">désignation</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">quantité</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">prix unitaire estimatif</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant estimatif</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant demandé</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant accordé</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">date</th>
                   </tr>
                 </thead>
@@ -154,9 +157,14 @@ $besoinsEnAttente = $result4['besoinsEnAttente'];
                   <?php while($besoin = mysqli_fetch_assoc($result5)): ?>
                     <tr>
                       <td><?= $besoin['designation']; ?></td>
-                      <td><?= $besoin['qte']; ?></td>
-                      <td><?= $besoin['prixU']; ?> FCFA</td>
                       <td><?= $besoin['montant']; ?> FCFA</td>
+                      <td>
+                          <?php
+                            if (!empty($besoin['montant_accorde'])) {
+                              echo $besoin['montant_accorde'] . ' FCFA';
+                            }
+                          ?>
+                      </td>
                       <td><?= $besoin['date']; ?></td>
                     </tr>
                   <?php endwhile; ?>

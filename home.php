@@ -29,6 +29,8 @@ $solde = $total1 - $total2;
 
 <?php include_once "navbar.php"; ?>
 
+<?php if ($user['user'] == 'user'): ?>
+
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
     <!-- Navbar -->
     <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
@@ -142,5 +144,11 @@ $solde = $total1 - $total2;
       </footer>
     </div>
   </main>
+
+<?php else: ?>
+
+    <h3 class="text-center mt-30">Bienvenue <?= $user['username']; ?></h3>
+
+<?php endif; ?>
 
 <?php include_once "footer.php"; ?>

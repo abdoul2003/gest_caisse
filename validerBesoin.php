@@ -19,7 +19,8 @@ $result = select($query);
 $result = mysqli_fetch_assoc($result);
 
 $date = $result['date'];
-$montant = $result['montant'];
+$montant_demande = $result['montant'];
+$montant_accorde = $result['montant_accorde'];
 
 ?>
 <?php include_once "header.php"; ?>
@@ -86,13 +87,13 @@ $montant = $result['montant'];
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label for="mt_d">Montant demandé</label>
-                            <input type="number" name="mt_d" class="form-control" placeholder="Montant demandé" required>
+                            <input type="number" name="mt_d" value="<?= $montant_demande; ?>" class="form-control" placeholder="Montant demandé" required>
                         </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label for="mt_a">Montant accordé</label>
-                            <input type="number" name="mt_a" value="<?= $montant; ?>" class="form-control" placeholder="Montant accordé" required>
+                            <input type="number" name="mt_a" value="<?= $montant_accorde; ?>" class="form-control" placeholder="Montant accordé" required>
                         </div>
                     </div>
                 </div>
