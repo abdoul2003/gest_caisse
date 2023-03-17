@@ -51,19 +51,71 @@ $idU = isset($_GET['idU']) ? $_GET['idU'] : 0;
             <div class="row">
                 <form action="change_profile.php" method="post">
 
-                    <div class="col-12">
-                        <div class="form-group mb-2">
-                            <input type="hidden" name="idU" value="<?= $idU; ?>">
-                            <label for="profile" class="form-label">Profile</label>
-                            <select name="profile" id="profile" class="form-control">
-                            <?php while($profile = mysqli_fetch_assoc($res)): ?>
-                                <option value="<?= $profile['profile'] ?>"><?= $profile['profile'] ?></option>
-                            <?php endwhile;?>
-                            </select>
+                  <input type="hidden" name="idU" value="<?= $idU; ?>">
+                    
+                    <div class="form-group mb-2">
+                        <label for="profile" class="form-label">Profile</label>
+                        <select name="profile" id="profile" class="form-control">
+                        <?php while($profile = mysqli_fetch_assoc($res)): ?>
+                            <option value="<?= $profile['profile'] ?>"><?= $profile['profile'] ?></option>
+                        <?php endwhile;?>
+                        </select>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-md-6">
+                          <strong>Pages</strong>
                         </div>
-                        <div class="form-group text-center">
-                            <button type="submit" name="submit" class="btn btn-info">Attribuer</button>
+                        <div class="col-md-6">
+                          <strong>Actions</strong>
                         </div>
+                    </div>
+                    <hr>
+                    <div class="row mb-2">
+                        <div class="col-md-6">
+                          <p>Entrées</p>
+                        </div>
+                        <div class="col-md-6">
+                          <input type="checkbox" name="action_entrees[]" value="AE" id=""> Ajouter <br>
+                          <input type="checkbox" name="action_entrees[]" value="SE" id=""> Supprimer <br>
+                          <input type="checkbox" name="action_entrees[]" value="EE" id=""> Editer
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row mb-2">
+                        <div class="col-md-6">
+                          <p>Dépenses</p>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="checkbox" name="action_depenses[]" value="AD"> Ajouter <br>
+                            <input type="checkbox" name="action_depenses[]" value="SD"> Supprimer <br>
+                            <input type="checkbox" name="action_depenses[]" value="ED"> Editer
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row mb-2">
+                        <div class="col-md-6">
+                          <p>Besoins</p>
+                        </div>
+                        <div class="col-md-6">
+                          <input type="checkbox" name="action_besoins[]" id="" value="AB"> Ajouter <br>
+                          <input type="checkbox" name="action_besoins[]" id="" value="ARB"> Accepter / Refuser <br>
+                          <input type="checkbox" name="action_besoins[]" id="" value="APCB"> Approvisionner la caisse <br>
+                          <input type="checkbox" name="action_besoins[]" id="" value="IB">Imprimer
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row mb-2">
+                        <div class="col-md-6">
+                          <p>Statistiques</p>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="checkbox" name="action_statistiques" id="" value="SS"> Supprimer
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-group text-center">
+                        <button type="submit" name="submit" class="btn btn-info">Attribuer</button>
                     </div>
                 </form>
             </div>

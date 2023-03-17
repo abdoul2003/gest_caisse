@@ -28,6 +28,7 @@ if (isset($_SESSION['msg_dep'])) {
 
 }
 
+$actionsE = explode('-', $user['actions_entrees']) ;
 
 $query = "SELECT * FROM entrees";
 $result = select($query);
@@ -60,8 +61,12 @@ $result = select($query);
       </div>
     </nav>
     <div class="container-fluid py-4">
-    <a href="ajouterEntree.php" class="btn btn-info">Ajouter une entrée</a>
-              <?php if (isset($msg_dep)): ?>
+    <?php foreach($actionsE as $actionE): ?>
+      <?php if ($actionE == "AE"): ?>
+        <a href="ajouterEntree.php" class="btn btn-info">Ajouter une entrée</a>
+      <?php endif; ?>
+    <?php endforeach; ?>     
+        <?php if (isset($msg_dep)): ?>
                   <div class="alert alert-success text-white">
                       <?= $msg_dep; ?>
                   </div>
@@ -83,9 +88,11 @@ $result = select($query);
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant accordé</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">remarques</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">moyen de payement</th>
-                    <?php if ($user['role'] == 'caisse'): ?>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">actions</th>
-                    <?php endif; ?>
+                    <?php foreach($actionsE as $actionE): ?>
+                      <?php if ($actionE == "EE" || $actionE == "SE"): ?>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">action</th>
+                      <?php endif; ?>
+                    <?php endforeach; ?>
                   </tr>
                 </thead>
                 <tbody>
@@ -100,13 +107,17 @@ $result = select($query);
                         <td><?= $entree['mt_a'] ?> FCFA</td>
                         <td><?= $entree['remarque'] ?></td>
                         <td><?= $entree['type_paye'] ?></td>
-                        <?php if ($user['role'] == 'caisse'): ?>
-                          <td>
-                            <a href="editerEntree.php?idE=<?= $entree['id']; ?>" class="btn btn-primary">Editer</a>
-                            &nbsp;
-                            <a onclick="return confirm('Etes-vous sûr de vouloir supprimer cette entrée de la liste ?');" href="supprimerEntree.php?idE=<?= $entree['id']; ?>" class="btn btn-danger">Supprimer</a>
-                          </td>
-                        <?php endif; ?>
+                        <td>
+                            <?php foreach($actionsE as $actionE): ?>
+                              <?php if ($actionE == "EE"): ?>
+                              <a href="editerEntree.php?idE=<?= $entree['id']; ?>" class="btn btn-primary">Editer</a>
+                              <?php endif; ?>
+                              &nbsp;
+                              <?php if ($actionE == "SE"): ?>
+                              <a onclick="return confirm('Etes-vous sûr de vouloir supprimer cette entrée de la liste ?');" href="supprimerEntree.php?idE=<?= $entree['id']; ?>" class="btn btn-danger">Supprimer</a>
+                              <?php endif; ?>
+                            <?php endforeach; ?>
+                        </td>
                       </tr>
                     <?php endwhile; ?>
                 </tbody>

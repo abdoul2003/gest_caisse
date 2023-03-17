@@ -28,6 +28,9 @@ if (isset($_SESSION['msg_dep'])) {
 
 }
 
+$actionsD = explode('-', $user['actions_depenses']) ;
+
+
 $query = "SELECT * FROM depenses";
 $result = select($query);
 
@@ -61,7 +64,11 @@ $result = select($query);
     <div class="container-fluid py-4">
         <div class="card">
           <div class="card-body">
-            <a href="ajouterDepense.php" class="btn btn-info">Ajouter une dépense</a>
+          <?php foreach($actionsD as $actionD): ?>
+              <?php if ($actionD == "AD"): ?>
+                <a href="ajouterDepense.php" class="btn btn-info">Ajouter une dépense</a>
+              <?php endif; ?>
+          <?php endforeach; ?> 
             <?php if (isset($msg_dep)): ?>
                 <div class="alert alert-success text-white">
                     <?= $msg_dep; ?>
@@ -79,9 +86,11 @@ $result = select($query);
                   <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">bénéficiaire</th>
                   <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">motifs</th>
                   <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant</th>
-                  <?php if ($user['role'] == 'caisse'): ?>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">actions</th>
-                  <?php endif; ?>
+                  <?php foreach($actionsD as $actionD): ?>
+                    <?php if ($actionD == "ED" || $actionD == "SD"): ?>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">action</th>
+                    <?php endif; ?>
+                  <?php endforeach; ?>
                 </tr>
               </thead>
               <tbody>
@@ -91,13 +100,17 @@ $result = select($query);
                       <td><?= $depense['beneficiaire'] ?></td>
                       <td><?= $depense['motif'] ?></td>
                       <td><?= $depense['mt'] ?> FCFA</td>
-                      <?php if ($user['role'] == 'caisse'): ?>
-                        <td>
-                          <a href="editerDepense.php?idD=<?= $depense['id']; ?>" class="btn btn-primary">Editer</a>
-                          &nbsp;
-                          <a onclick="return confirm('Etes-vous sûr de vouloir supprimer cette dépense de la liste ?');" href="supprimerDepense.php?idD=<?= $depense['id']; ?>" class="btn btn-danger">Supprimer</a>
-                        </td>
-                      <?php endif; ?>
+                      <td>
+                          <?php foreach($actionsD as $actionD): ?>
+                            <?php if ($actionD == "ED"): ?>
+                              <a href="editerDepense.php?idD=<?= $depense['id']; ?>" class="btn btn-primary">Editer</a>
+                            <?php endif; ?>
+                            &nbsp;
+                            <?php if ($actionD == "SD"): ?>
+                              <a onclick="return confirm('Etes-vous sûr de vouloir supprimer cette dépense de la liste ?');" href="supprimerDepense.php?idD=<?= $depense['id']; ?>" class="btn btn-danger">Supprimer</a>
+                            <?php endif; ?>
+                          <?php endforeach; ?>
+                      </td>
                     </tr>
                   <?php endwhile; ?>
               </tbody>

@@ -7,7 +7,7 @@ if (isset($_POST['submit'])) {
     $beneficiaire = addslashes($_POST['benefi']);
     $montant = $_POST['montant'];
     $motif = addslashes($_POST['motif']);
-    $date = $_POST['date'];
+    $date = date('Y-m-d');
 
 
     $req = "INSERT INTO depenses VALUES(NULL,'$date','$beneficiaire','$motif',$montant)";

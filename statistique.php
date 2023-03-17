@@ -30,6 +30,8 @@ $result2 = select($query2);
 $query3 = "SELECT id,designation,montant,montant_accorde,status,date FROM besoins WHERE status='refusé'";
 $result3 = select($query3);
 
+$action = $user['actions_statistiques'];
+
 ?>
 <?php include_once "header.php"; ?>
 
@@ -129,7 +131,7 @@ $result3 = select($query3);
                         <td><?php echo ($besoin['payement'] == 0) ? 'En attente' : 'Payé'; ?></td>
                         <td><?= $besoin['date']; ?></td>
                         <td>
-                          <?php if ($user['role'] == 'caisse'): ?>
+                          <?php if ($action == 'SS'): ?>
                             <a class="btn btn-danger" href="supprimerBesoin.php?idB=<?= $besoin['id']; ?>">Supprimer</a>
                           <?php endif; ?>
                         </td>
@@ -171,7 +173,7 @@ $result3 = select($query3);
                         <td><?= $besoin['status']; ?></td>
                         <td><?= $besoin['date']; ?></td>
                         <td>
-                          <?php if ($user['role'] == 'caisse'): ?>
+                          <?php if ($action == 'SS'): ?>
                             <a class="btn btn-danger" href="supprimerBesoin.php?idB=<?= $besoin['id']; ?>">Supprimer</a>
                           <?php endif; ?>
                         </td>

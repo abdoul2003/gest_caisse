@@ -29,6 +29,9 @@ $result4 = mysqli_fetch_assoc($result4);
 
 $besoinsEnAttente = $result4['besoinsEnAttente'];
 
+$actionsB = explode('-', $user['actions_besoins']) ;
+
+
 ?>
 <?php include_once "header.php"; ?>
 
@@ -60,52 +63,62 @@ $besoinsEnAttente = $result4['besoinsEnAttente'];
     <div class="container-fluid py-4">
         <div class="card">
           <div class="card-body">
-            <?php if($user['role'] == 'comptabilite' || $user['role'] == 'caisse' || $user['role'] == 'rac'): ?>
-              <a href="exprimerBesoin.php" class="btn btn-info">Exprimer vos besoins</a>
-              &nbsp;
-              <a href="printBesoins.php" class="btn btn-outline-danger">Imprimer</a>
-            <?php endif; ?>
-            <?php if($user['role'] == 'directeur' || $user['role'] == 'caisse'): ?>
-              <h5 class="float-end">Total à payer: <strong><?php echo isset($total) ? $total : 0 ?> FCFA</strong></h5>
-            <?php endif; ?>
-            <?php if($user['role'] == 'caisse'): ?>
-              <table class="table align-items-center mb-0">
-                <thead>
-                  <tr>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">désignation</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant demandé</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant accordé</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">payement</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">status</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">date</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php while($besoin = mysqli_fetch_assoc($result5)): ?>
-                      <tr>
-                        <td><?= $besoin['designation']; ?></td>
-                        <td><?= $besoin['montant']; ?> FCFA</td>
-                        <td>
-                          <?php
-                            if (!empty($besoin['montant_accorde'])) {
-                              echo $besoin['montant_accorde'] . ' FCFA';
-                            }
-                          ?>
-                        </td>
-                        <td><?php echo ($besoin['payement'] == 0) ? 'En attente' : 'Payé'; ?></td>
-                        <td><?= ucfirst($besoin['status']); ?></td>
-                        <td><?= $besoin['date']; ?></td>
-                        <td>
-                          <?php if ($user['role'] == 'caisse' AND $besoin['status'] == 'accepté' AND $besoin['payement'] == 0): ?>
+          <?php foreach($actionsB as $actionB): ?>
+              <?php if ($actionB == "AB"): ?>
+                <a href="exprimerBesoin.php" class="btn btn-info">Exprimer vos besoins</a>
+              <?php endif; ?>
+          <?php endforeach; ?>
+          &nbsp;
+          <?php foreach($actionsB as $actionB): ?>
+              <?php if ($actionB == "IB"): ?>
+                <a href="printBesoins.php" class="btn btn-outline-danger">Imprimer</a>
+              <?php endif; ?>
+          <?php endforeach; ?>
+
+          <h5 class="float-end">Total à payer: <strong><?php echo isset($total) ? $total : 0 ?> FCFA</strong></h5>
+
+            <table class="table align-items-center mb-0">
+              <thead>
+                <tr>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">désignation</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant demandé</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant accordé</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">payement</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">status</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">date</th>
+                  <?php foreach($actionsB as $actionB): ?>
+                    <?php if ($actionB == "APCB"): ?>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">action</th>
+                    <?php endif; ?>
+                  <?php endforeach; ?>
+                </tr>
+              </thead>
+              <tbody>
+                <?php while($besoin = mysqli_fetch_assoc($result5)): ?>
+                    <tr>
+                      <td><?= $besoin['designation']; ?></td>
+                      <td><?= $besoin['montant']; ?> FCFA</td>
+                      <td>
+                        <?php
+                          if (!empty($besoin['montant_accorde'])) {
+                            echo $besoin['montant_accorde'] . ' FCFA';
+                          }
+                        ?>
+                      </td>
+                      <td><?php echo ($besoin['payement'] == 0) ? 'En attente' : 'Payé'; ?></td>
+                      <td><?= ucfirst($besoin['status']); ?></td>
+                      <td><?= $besoin['date']; ?></td>
+                      <td>
+                        <?php foreach($actionsB as $actionB): ?>
+                          <?php if ($actionB == "APCB" AND $besoin['status'] == 'accepté' AND $besoin['payement'] == 0): ?>
                             <a class="btn btn-dark" href="validerBesoin.php?idB=<?= $besoin['id']; ?>">Approvisionner la caisse</a>
                           <?php endif; ?>
-                        </td>
-                      </tr>
-                    <?php endwhile; ?>
-                </tbody>
-              </table>
-            <?php endif; ?>
+                        <?php endforeach; ?>
+                      <td>
+                    </tr>
+                  <?php endwhile; ?>
+              </tbody>
+            </table>
             <?php if($user['role'] == 'directeur'): ?>
               <table class="table align-items-center mb-0">
                 <thead>
@@ -113,7 +126,11 @@ $besoinsEnAttente = $result4['besoinsEnAttente'];
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">désignation</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant demandé</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant accordé</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">actions</th>
+                    <?php foreach($actionsB as $actionB): ?>
+                      <?php if ($actionB == "ARB"): ?>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">action</th>
+                      <?php endif; ?>
+                    <?php endforeach; ?>
                   </tr>
                 </thead>
                 <tbody>
@@ -128,9 +145,13 @@ $besoinsEnAttente = $result4['besoinsEnAttente'];
                             <input type="number" name="montant_accorde" class="w-50 form-control" required>
                           </td>
                           <td>
-                            <a class="btn btn-danger" href="refuserBesoin.php?idB=<?= $besoin2['id']; ?>">Refuser</a>
-                            &nbsp;
-                            <button class="btn btn-primary" type="submit" name="submit">Accepter</button>
+                            <?php foreach($actionsB as $actionB): ?>
+                              <?php if ($actionB == "ARB"): ?>
+                                <a class="btn btn-danger" href="refuserBesoin.php?idB=<?= $besoin2['id']; ?>">Refuser</a>
+                                &nbsp;
+                                <button class="btn btn-primary" type="submit" name="submit">Accepter</button>
+                              <?php endif; ?>
+                            <?php endforeach; ?>
                           </td>
                         </form>
                       </tr>
@@ -140,34 +161,6 @@ $besoinsEnAttente = $result4['besoinsEnAttente'];
                         <td colspan="6" align="center">Aucun besoin en attente</td>
                       </tr>
                   <?php endif; ?>
-                </tbody>
-              </table>
-            <?php endif; ?>
-            <?php if($user['role'] == 'rac' || $user['role'] == 'comptabilite'): ?>
-              <table class="table align-items-center mb-0">
-                <thead>
-                  <tr>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">désignation</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant demandé</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">montant accordé</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php while($besoin = mysqli_fetch_assoc($result5)): ?>
-                    <tr>
-                      <td><?= $besoin['designation']; ?></td>
-                      <td><?= $besoin['montant']; ?> FCFA</td>
-                      <td>
-                          <?php
-                            if (!empty($besoin['montant_accorde'])) {
-                              echo $besoin['montant_accorde'] . ' FCFA';
-                            }
-                          ?>
-                      </td>
-                      <td><?= $besoin['date']; ?></td>
-                    </tr>
-                  <?php endwhile; ?>
                 </tbody>
               </table>
             <?php endif; ?>
